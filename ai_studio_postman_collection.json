@@ -1,0 +1,432 @@
+{
+  "info": {
+    "name": "AI Studio - Complete API Tests",
+    "description": "Full test collection for AI Studio Django REST API with all 10 endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1️⃣ REGISTER USER",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (pm.response.code === 201) {",
+              "    pm.environment.set('access_token', jsonData.data.access);",
+              "    pm.environment.set('refresh_token', jsonData.data.refresh);",
+              "    pm.environment.set('user_id', jsonData.data.user.id);",
+              "    pm.environment.set('user_email', jsonData.data.user.email);",
+              "}",
+              "pm.test('Status code 201', () => pm.expect(pm.response.code).to.equal(201));",
+              "pm.test('Response has access token', () => pm.expect(jsonData.data.access).to.exist);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"testuser@gmail.com\",\n  \"password\": \"SecurePassword@123\",\n  \"confirm_password\": \"SecurePassword@123\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/auth/register/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "auth", "register", ""]
+        }
+      }
+    },
+    {
+      "name": "2️⃣ LOGIN USER",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (pm.response.code === 200) {",
+              "    pm.environment.set('access_token', jsonData.data.access);",
+              "    pm.environment.set('refresh_token', jsonData.data.refresh);",
+              "}",
+              "pm.test('Status code 200', () => pm.expect(pm.response.code).to.equal(200));",
+              "pm.test('Has tokens', () => pm.expect(jsonData.data.access).to.exist);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"testuser@gmail.com\",\n  \"password\": \"SecurePassword@123\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/auth/login/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "auth", "login", ""]
+        }
+      }
+    },
+    {
+      "name": "3️⃣ GET PROFILE",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code 200', () => pm.expect(pm.response.code).to.equal(200));",
+              "var jsonData = pm.response.json();",
+              "pm.test('Has user data', () => pm.expect(jsonData.data.username).to.exist);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{access_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/auth/profile/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "auth", "profile", ""]
+        }
+      }
+    },
+    {
+      "name": "4️⃣ UPDATE PROFILE",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code 200', () => pm.expect(pm.response.code).to.equal(200));",
+              "var jsonData = pm.response.json();",
+              "pm.test('Profile updated', () => pm.expect(jsonData.status).to.equal('success'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{access_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"updateduser\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/auth/profile/update/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "auth", "profile", "update", ""]
+        }
+      }
+    },
+    {
+      "name": "5️⃣ FORGOT PASSWORD",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code 200', () => pm.expect(pm.response.code).to.equal(200));",
+              "var jsonData = pm.response.json();",
+              "pm.test('OTP sent', () => pm.expect(jsonData.message).to.include('OTP'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"testuser@gmail.com\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/auth/forgot-password/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "auth", "forgot-password", ""]
+        }
+      }
+    },
+    {
+      "name": "6️⃣ VERIFY OTP",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (pm.response.code === 200) {",
+              "    pm.environment.set('reset_token', jsonData.data.reset_token);",
+              "}",
+              "pm.test('Status code 200', () => pm.expect(pm.response.code).to.equal(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"testuser@gmail.com\",\n  \"otp_code\": \"123456\"\n}"
+        },
+        "description": "Replace 123456 with actual OTP from email"
+      },
+      "url": {
+        "raw": "http://localhost:8000/api/auth/verify-otp/",
+        "protocol": "http",
+        "host": ["localhost"],
+        "port": "8000",
+        "path": ["api", "auth", "verify-otp", ""]
+      }
+    },
+    {
+      "name": "7️⃣ RESET PASSWORD",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code 200', () => pm.expect(pm.response.code).to.equal(200));",
+              "var jsonData = pm.response.json();",
+              "pm.test('Password reset', () => pm.expect(jsonData.status).to.equal('success'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reset_token\": \"{{reset_token}}\",\n  \"new_password\": \"NewPassword@456\",\n  \"confirm_password\": \"NewPassword@456\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/auth/reset-password/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "auth", "reset-password", ""]
+        }
+      }
+    },
+    {
+      "name": "8️⃣ REFRESH TOKEN",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (pm.response.code === 200) {",
+              "    pm.environment.set('access_token', jsonData.data.access);",
+              "}",
+              "pm.test('Status code 200', () => pm.expect(pm.response.code).to.equal(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/auth/token/refresh/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "auth", "token", "refresh", ""]
+        }
+      }
+    },
+    {
+      "name": "9️⃣ LOGOUT",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code 200', () => pm.expect(pm.response.code).to.equal(200));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{access_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/auth/logout/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8000",
+          "path": ["api", "auth", "logout", ""]
+        }
+      }
+    },
+    {
+      "name": "🟥 GOOGLE LOGIN ⭐ NEW",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (pm.response.code === 200 || pm.response.code === 201) {",
+              "    pm.environment.set('google_access_token', jsonData.data.access);",
+              "    pm.test('Google login successful', () => pm.expect(jsonData.status).to.equal('success'));",
+              "}",
+              "pm.test('Valid response code', () => pm.expect([200, 201]).to.include(pm.response.code));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id_token\": \"YOUR_GOOGLE_ID_TOKEN_HERE\"\n}"
+        },
+        "description": "⚠️ Replace YOUR_GOOGLE_ID_TOKEN_HERE with actual Google token from:\n1. Google OAuth Playground: https://developers.google.com/oauthplayground/\n2. Or use: https://accounts.google.com/o/oauth2/v2/auth?client_id=YOUR_CLIENT_ID&response_type=id_token&scope=openid+email+profile"
+      },
+      "url": {
+        "raw": "http://localhost:8000/api/auth/google-login/",
+        "protocol": "http",
+        "host": ["localhost"],
+        "port": "8000",
+        "path": ["api", "auth", "google-login", ""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "refresh_token",
+      "value": ""
+    },
+    {
+      "key": "reset_token",
+      "value": ""
+    },
+    {
+      "key": "user_id",
+      "value": ""
+    },
+    {
+      "key": "user_email",
+      "value": ""
+    },
+    {
+      "key": "google_access_token",
+      "value": ""
+    }
+  ]
+}
