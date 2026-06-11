@@ -1,3 +1,5 @@
 {
-  "startCommand": "python manage.py migrate && gunicorn --bind 0.0.0.0:${PORT:-8000} ai_studio.wsgi:application"
+  "build": {
+    "startCommand": "python manage.py migrate && gunicorn --bind 0.0.0.0:${PORT:-8000} Auth.wsgi:application"
+  }
 }
