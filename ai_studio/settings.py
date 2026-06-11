@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
@@ -71,25 +72,17 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ai_studio.wsgi.application'
 
 # Database
-db_password = os.getenv('DB_PASSWORD', '').strip()
-use_sqlite = db_password in {'', 'your_password_here'}
+database_url = os.getenv('DATABASE_URL', '').strip()
 
-if use_sqlite:
+if database_url:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+        'default': dj_database_url.config(default=database_url)
     }
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DB_NAME', 'ai_studio'),
-            'USER': os.getenv('DB_USER', 'postgres'),
-            'PASSWORD': db_password,
-            'HOST': os.getenv('DB_HOST', 'localhost'),
-            'PORT': os.getenv('DB_PORT', '5432'),
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
