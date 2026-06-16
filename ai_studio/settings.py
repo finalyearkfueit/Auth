@@ -150,7 +150,7 @@ SIMPLE_JWT = {
 # CORS Configuration
 CORS_ALLOWED_ORIGINS = os.getenv(
     'CORS_ALLOWED_ORIGINS',
-    'http://localhost:3000,http://localhost:8000,http://localhost:8081,http://127.0.0.1:3000,http://127.0.0.1:8081,https://auth-production-f0ea.up.railway.app'
+    'http://localhost:3000,http://localhost:8000,http://localhost:8081,http://127.0.0.1:3000,http://127.0.0.1:8081,https://dqw-production.up.railway.app'
 ).split(',')
 
 CORS_ALLOW_CREDENTIALS = True
