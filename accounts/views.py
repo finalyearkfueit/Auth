@@ -42,8 +42,11 @@ class UserRegistrationView(views.APIView):
         if serializer.is_valid():
             user = serializer.save()
 
-            # Send welcome email
-            EmailService.send_welcome_email(user.email, user.username)
+            # Send welcome email (only if email configured)
+            try:
+                EmailService.send_welcome_email(user.email, user.username)
+            except Exception as e:
+                print(f"Email failed: {e}")  # Don't fail registration if email fails
 
             # Generate tokens
             refresh = RefreshToken.for_user(user)
